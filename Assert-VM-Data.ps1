@@ -1,7 +1,11 @@
 ﻿$ScriptPath = Split-Path $MyInvocation.MyCommand.Path
 $WorkingFolder = 'D:\Nana\Test'
 $ContentFolder = 'D:\Nana\Content\'
-$Credential = Get-Credential Administrator
+
+if ($Credential -eq $Null)
+{
+    $Credential = Get-Credential Administrator
+}
 
 @{
     AllNodes = @(
@@ -39,6 +43,7 @@ $Credential = Get-Credential Administrator
 
                 VMNameBase        = 'Nana-Test'
                 VMName            = @('1')
+                VMInterfaceAlias  = 'Ethernet 2'
                 VMIPAddress       = @('192.168.1.1')
                 VMStartupMemory   = 4GB
                 VMState           = 'Running'
@@ -58,21 +63,21 @@ $Credential = Get-Credential Administrator
                                         $ContentFolder
                                     )
 
-              },#>
+              }#>
 
               @{
                 # name of the VMType
                 Name            = 'XM-TestVM'
 
                 # location for the source vhd
-                VhdSource       = 'D:\Nana\Test\Vhd\Base\Nana-XM.vhd'
+                VhdSource       = 'D:\Nana\Test\Vhd\Base\Nana-Test.vhd'
 
                 # VMName is an array and will be combined with namebase to 
                 # create VM names like Nana-Test-DC, Nana-Test-WS, etc
 
                 VMNameBase        = 'Nana-XM'
                 VMName            = @('DC', 'Node')
-                VMIPAddress       = @('192.168.1.10', '192.168.1.11')
+                VMIPAddress       = @('192.168.1.100', '192.168.1.101')
                 VMStartupMemory   = 4GB
                 VMState           = 'Running'
                 VMUnattendPath    = "$ScriptPath\unattend.xml"

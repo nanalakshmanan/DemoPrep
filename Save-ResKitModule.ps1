@@ -17,5 +17,5 @@ if (-not(Test-Path $ModulesFolder))
 # download required modules to desired directory
 Write-Verbose 'Downloading modules'
 
-Save-Module -InputObject $xModules -Path $ModulesFolder -Force
+Save-Module -InputObject $xModules -Path $ModulesFolder -Force -Verbose
 

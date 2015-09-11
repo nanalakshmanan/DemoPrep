@@ -1,0 +1,1 @@
+rem xcopy c:\Content\Nana\Content\Modules "C:\Program Files\WindowsPowerShell\Modules" /E /C /I /H /Y
