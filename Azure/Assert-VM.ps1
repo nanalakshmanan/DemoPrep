@@ -26,7 +26,7 @@ foreach($VMType in $VMSettings.Keys)
     $Settings = $VMSettings[$VMType]
     foreach($Name in $Settings.Name)
     {
-        $VMName = $Settings.BaseName + $Name
+        $VMName = $Settings.BaseName + "-$Name"
         $ComputerName = $VMName
         $OSDiskName = $VMName + "OSDisk"
 

@@ -18,7 +18,7 @@ if ($Credential -eq $Null)
             # One switch can be created overall
             SwitchName        = 'DemoSwitchInternal'
             SwitchType        = 'Internal'
-            SwitchIPv4Address = '192.168.1.10'
+            SwitchIPv4Address = '92.168.1.10'
 
             # path where diff vhds will be created
             VhdPath         = "$WorkingFolder\Vhd"
@@ -30,21 +30,21 @@ if ($Credential -eq $Null)
             # each entry contains data for VMs created from a single
             # vhd source
 
-            VMType = @(
-              <#@{
+            VMType = @(             
+
+              @{
                 # name of the VMType
-                Name            = 'TestVM'
+                Name            = 'XM-TestVM'
 
                 # location for the source vhd
-                VhdSource       = 'D:\VHD\Golden\Nana-Test.vhd'
+                VhdSource       = 'D:\Nana\Test\Vhd\Golden\Nana-Test.vhd'
 
                 # VMName is an array and will be combined with namebase to 
                 # create VM names like Nana-Test-DC, Nana-Test-WS, etc
 
-                VMNameBase        = 'Nana-Test'
-                VMName            = @('1')
-                VMInterfaceAlias  = 'Ethernet 2'
-                VMIPAddress       = @('192.168.1.1')
+                VMNameBase        = 'Nana-XM'
+                VMName            = @('DC', 'Node')
+                VMIPAddress       = @('92.168.1.100', '92.168.1.101')
                 VMStartupMemory   = 4GB
                 VMState           = 'Running'
                 VMUnattendPath    = "$ScriptPath\unattend.xml"
@@ -55,7 +55,7 @@ if ($Credential -eq $Null)
 
                 # This is the modules folder. Everything under this folder
                 # will be copied to $Env:ProgramFiles\WindowsPowerShell\Modules
-                VMModulesFolder = "$ContentFolder\Modules"
+                VMModulesFolder = (Join-Path $ContentFolder 'Modules')
 
                 #The folders to inject into this vhd. These will be
                 #available under \content
@@ -63,21 +63,54 @@ if ($Credential -eq $Null)
                                         $ContentFolder
                                     )
 
-              }#>
+              },
 
               @{
                 # name of the VMType
-                Name            = 'XM-TestVM'
+                Name            = 'LTSB-TestVM'
 
                 # location for the source vhd
-                VhdSource       = 'D:\Nana\Test\Vhd\Base\Nana-Test.vhd'
+                VhdSource       = 'D:\Nana\Test\Vhd\Golden\Nana-LTSB.vhd'
 
                 # VMName is an array and will be combined with namebase to 
                 # create VM names like Nana-Test-DC, Nana-Test-WS, etc
 
-                VMNameBase        = 'Nana-XM'
-                VMName            = @('DC', 'Node')
-                VMIPAddress       = @('192.168.1.100', '192.168.1.101')
+                VMNameBase        = 'Nana-V1'
+                VMName            = @('Node')
+                VMIPAddress       = @('92.168.1.102')
+                VMStartupMemory   = 4GB
+                VMState           = 'Running'
+                VMUnattendPath    = "$ScriptPath\unattend.xml"
+                VMUnattendCommand = "$ScriptPath\unattend.cmd"
+
+                # Administrator credentials
+                VMAdministratorCredentials = $Credential
+
+                # This is the modules folder. Everything under this folder
+                # will be copied to $Env:ProgramFiles\WindowsPowerShell\Modules
+                VMModulesFolder = (Join-Path $ContentFolder 'Modules')
+
+                #The folders to inject into this vhd. These will be
+                #available under \content
+                VMFoldersToCopy = @(
+                                        $ContentFolder
+                                    )
+
+              }
+
+            @{
+                # name of the VMType
+                Name            = 'PC-TestVM'
+
+                # location for the source vhd
+                VhdSource       = 'D:\Nana\Test\Vhd\Golden\Nana-WTR-Priv.vhd'
+
+                # VMName is an array and will be combined with namebase to 
+                # create VM names like Nana-Test-DC, Nana-Test-WS, etc
+
+                VMNameBase        = 'Nana-PC'
+                VMName            = @('Node')
+                VMIPAddress       = @('92.168.1.103')
                 VMStartupMemory   = 4GB
                 VMState           = 'Running'
                 VMUnattendPath    = "$ScriptPath\unattend.xml"

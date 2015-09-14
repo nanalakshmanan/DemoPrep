@@ -42,5 +42,5 @@ $Settings.StorageAccountKey = (Get-AzureStorageAccountKey -ResourceGroupName $Se
     . $ScriptPath\Publish-Folder.ps1 -Path $_ `
                                      -StorageAccountName $Settings.StorageAccountName `
                                      -StorageAccountKey $Settings.StorageAccountKey `
-                                     -Verbose:$Verbose
+                                     -Verbose:$VerbosePref
 }
