@@ -21,7 +21,12 @@ param(
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path
 
-. "$ScriptPath\1-CommonInit.ps1" -Verbose:$Verbose
+if ($PSBoundParameters.ContainsKey('Verbose'))
+{
+    $VerbosePref = $true
+}
+
+. "$ScriptPath\1-CommonInit.ps1" -Verbose:$VerbosePref
 
 # containername needs to be lower case in Azure
 $ContainerName = (Split-Path -Path $Path -Leaf).ToLower()
@@ -29,13 +34,13 @@ $ContainerName = (Split-Path -Path $Path -Leaf).ToLower()
 #
 # Create the storage container first
 #
-$Context = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -Verbose:$Verbose 
+$Context = New-AzureStorageContext -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -Verbose:$VerbosePref 
 
 if (-not(Get-AzureStorageContainer -Name $ContainerName -ErrorAction Ignore -Context $Context -ErrorVariable ev))
 {
     try
     {
-        New-AzureStorageContainer -Name $ContainerName -ErrorAction Stop -Context $Context -Verbose:$verbose
+        New-AzureStorageContainer -Name $ContainerName -ErrorAction Stop -Context $Context -Verbose:$VerbosePref
     }
     catch
     {
@@ -70,6 +75,6 @@ $Null  = Set-AzureStorageBlobContent -File $TempModuleArchive `
                                      -Blob "$ContainerName.zip" `
                                      -Force `
                                      -Context $Context `
-                                     -Verbose:$Verbose 
+                                     -Verbose:$VerbosePref 
 
 Write-Verbose "Uploading $Path archive from $TempModuleArchive to Azure storage: COMPLETE"

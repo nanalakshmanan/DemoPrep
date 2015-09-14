@@ -30,15 +30,17 @@ foreach($VMType in $VMSettings.Keys)
         $InterfaceName = 'Interface' + $VMName
 
         Write-Verbose "Removing VM $VMName"        
-        Remove-AzureVM -ResourceGroupName $Subscription.ResourceGroup -Name $VMName -Force -Verbose:$VerbosePref
+        Remove-AzureVM -ResourceGroupName $Subscription.ResourceGroup -Name $VMName -Force -Verbose:$VerbosePref 2> $null
 
         Write-Verbose "Removing Network Interface $InterfaceName"
-        Remove-AzureNetworkInterface -Name $InterfaceName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref
+        Remove-AzureNetworkInterface -Name $InterfaceName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref 2> $null
 
         Write-Verbose "Removing Virtual Netnwork $($Settings.VNetName)"
-        $VNet = Remove-AzureVirtualNetwork -Name $Settings.VNetName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref -PassThru
+        Remove-AzureVirtualNetwork -Name $Settings.VNetName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref -PassThru 2> $null
 
         Write-Verbose "Removing Public IP Address for $InterfaceName"
-        Remove-AzurePublicIpAddress -Name $InterfaceName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref
+        Remove-AzurePublicIpAddress -Name $InterfaceName -ResourceGroupName $Subscription.ResourceGroup -Force -Verbose:$VerbosePref 2> $null
     }
 }
+
+Get-AzureAutomationDscNode -ResourceGroupName $Subscription.ResourceGroup -AutomationAccountName $Subscription.AutomationAccount | Unregister-AzureAutomationDscNode -Force -Verbose

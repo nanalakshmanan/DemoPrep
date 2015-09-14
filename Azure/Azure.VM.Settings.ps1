@@ -5,9 +5,8 @@
 
 @{
     DemoNode = @{
-
             BaseName                = 'nana-aademo'
-            Name                    = @('100')
+            Name                    = @('10', '11')
             Size                    = 'Standard_A2'
             SubnetName              = 'Nana-Subnet'
             VNetName                = 'NanaDemoVNet'
