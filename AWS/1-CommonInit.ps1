@@ -101,12 +101,32 @@ function Configure-AWSVMWMF
     $securepassword = ConvertTo-SecureString $password -AsPlainText -Force
     $creds = New-Object System.Management.Automation.PSCredential ('Administrator', ($securepassword))
 
-    Write-Verbose 'Invoking script on remote VM.'
-    $s = New-PSSession -ComputerName $publicDNS -Credential $creds -Verbose
-    $job = Invoke-Command -Session $s -ScriptBlock $script -Verbose
-    Invoke-Command -Session $s -ScriptBlock {Wait-Job -Id $($using:job).Id} 
-    
-    Restart-Computer -ComputerName $publicDNS -Protocol WSMan -Wait -Force -Verbose -Credential $creds
+    for($i=0; $i -lt 5; $i++)
+    {
+        $s = New-PSSession -ComputerName $publicDNS -Credential $creds -Verbose -ErrorAction SilentlyContinue
+
+        if ($s -ne $null) {break;}
+
+        Write-Verbose "Cannot create remoting session to $publicDNS, sleeping 5 seconds"
+        Start-Sleep -Seconds 5
+    }
+    Write-Verbose "Invoking script on remote VM $publicDNS"
+
+    try
+    {
+        $job = Invoke-Command -Session $s -ScriptBlock $script -Verbose
+        $id = $job.Id
+
+        Write-Verbose "waiting for job $id to complete on $publicDNS"
+        Invoke-Command -Session $s -ScriptBlock {Wait-Job -Id $using:Id} 
+    }
+    finally
+    {
+        Write-Verbose "Closing remote session $($s.Id)"
+        Remove-PSSession $s
+    }   
+    Write-Verbose "Restarting VM $publicDNS"
+    Restart-Computer -ComputerName $publicDNS -Protocol WSMan -Wait -Force -Credential $creds
 }
 
 $ScriptPath = Split-Path $MyInvocation.MyCommand.Path

@@ -16,6 +16,22 @@ Write-Verbose "Loading subscription settings '$ScriptPath\Azure.Subscription.Set
 $Settings = (& "$ScriptPath\Azure.Subscription.Settings.ps1")
 
 #
+# Create the resource group if it does not exist
+#
+if (-not (Get-AzureResourceGroup -Name $Settings.ResourceGroup -ErrorAction SilentlyContinue))
+{
+    Write-Verbose "Creating new resource group $($Settings.ResourceGroup)"
+    New-AzureResourceGroup -Name $settings.ResourceGroup `
+                           -Location $Settings.StorageLocation `
+                           -Force `
+                           -Verbose:$VerbosePref
+}
+else
+{
+    Write-Verbose "Resource group $($Settings.ResourceGroup) exists"
+}
+
+#
 # Create the storage account if it does not exist
 #
 if(-not (Get-AzureStorageAccount -StorageAccountName $Settings.StorageAccountName -ResourceGroup $Settings.ResourceGroup -ErrorAction SilentlyContinue))
@@ -33,6 +49,22 @@ else
 }
 
 $Settings.StorageAccountKey = (Get-AzureStorageAccountKey -ResourceGroupName $Settings.ResourceGroup -Name $Settings.StorageAccountName  -Verbose:$VerbosePref).Key1
+
+#
+# Create the automation account if it does not exist
+#
+if (-not (Get-AzureAutomationAccount -ResourceGroupName $Settings.ResourceGroup -Name $Settings.AutomationAccount -ErrorAction SilentlyContinue))
+{
+    Write-Verbose "Creating automation account $($Settings.AutomationAccount)"
+    New-AzureAutomationAccount -ResourceGroupName $Settings.ResourceGroup `
+                               -Name $Settings.AutomationAccount `
+                               -Location $Settings.StorageLocation `
+                               -Verbose:$VerbosePref
+}
+else
+{
+    Write-Verbose "Automation account $($Settings.AutomationAccount) exists"
+}
 
 #
 # zip and upload all the required folders
