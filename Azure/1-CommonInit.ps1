@@ -10,20 +10,11 @@ if ($PSBoundParameters.ContainsKey('Verbose'))
     $VerbosePref = $true
 }
 
-Import-Module -Name Azure -Verbose:$false -ErrorVariable ev -ErrorAction SilentlyContinue 
+Import-Module -Name AzureRM.Profile -Verbose:$false -ErrorVariable ev -ErrorAction SilentlyContinue 
 
-if ($ev -ne $null)
+if (-not(Get-AzureRmSubscription -ErrorAction SilentlyContinue))
 {
-    Import-Module -Name AzureResourceManager -Verbose:$false -ErrorVariable ev -ErrorAction Stop 
-}
-
-Switch-AzureMode -Name AzureResourceManager
-
-#
-
-if (-not(Get-AzureAccount -ErrorAction SilentlyContinue))
-{
-    Add-AzureAccount -ErrorVariable ev
+    Add-AzureRmAccount -ErrorVariable ev
 
     if ($ev -ne $Null)
     {

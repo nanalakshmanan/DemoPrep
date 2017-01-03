@@ -1,7 +1,7 @@
-﻿if ($Credential -eq $Null)
-{
-    Get-Credential Administrator
-}
+﻿#if ($Credential -eq $Null)
+#{
+    $Credential = Get-Credential Administrator
+#}
 
 @{
     DemoNode = @{
