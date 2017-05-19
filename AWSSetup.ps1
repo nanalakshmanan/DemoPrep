@@ -5,10 +5,10 @@ $ScriptPath = Split-Path $MyInvocation.MyCommand.Path
 . "$ScriptPath\0-CommonInit.ps1"
 
 Write-Verbose "Loading subscription settings file $ScriptPath\AWS.Subscription.Settings.ps1"
-$Settings = (& "$ScriptPath\AWS.Subscription.Settings.ps1")
+$Settings = (& "$ScriptPath\AWS\AWS.Subscription.Settings.ps1")
 
 Write-Verbose "Loading VM settings file $ScriptPath\AWS.VM.Settings.ps1"
-$VMSettings = (& "$ScriptPath\AWS.VM.Settings.ps1")
+$VMSettings = (& "$ScriptPath\AWS\AWS.VM.Settings.ps1")
 
 # this is the CSV file generat by "Created Access Key in AWS IAM"
 $AWSKeys = Import-Csv -Path $Settings.CredentialsFile
@@ -48,15 +48,15 @@ foreach($VMType in $VMSettings.Keys)
                                 -UserData      $userdataBase64Encoded `
                                 -Verbose
 
-    $VMInstances += $instance
+    $instance.Instances | %{$VMInstances += $_.InstanceId}
 
 }
 
 while($true)
 {    
-    [array]$InitInstances = (Get-EC2Instance -Instance $VMInstances | foreach Instances | ?{$_.State.Name -ne 'Running'} | ?{$_.State.Name -ne 'Terminated'})
+    $InitInstances = (Get-EC2Instance -InstanceId $VMInstances | foreach Instances | ?{$_.State.Name -ne 'Running'} | ?{$_.State.Name -ne 'Terminated'})
 
-    if ($InitInstances.Count -eq 0)
+    if (-not $InitInstances -or ($InitInstances.Count -eq 0))
     {
         break
     }

@@ -1,6 +1,6 @@
 ﻿$ScriptPath = Split-Path $MyInvocation.MyCommand.Path
 
 @{
-        CredentialsFile     = 'D:\Nana\Official\AWS\Credentials.csv'
+        CredentialsFile     = 'C:\Nana\AWS\AccessKeys.csv'
         DefaultRegion       = 'us-west-2'
 }

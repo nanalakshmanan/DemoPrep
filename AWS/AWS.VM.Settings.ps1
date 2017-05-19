@@ -7,7 +7,7 @@
 @{
     # each entry in this collection contains data for one type of VM
     Webserver =  @{
-                        ImageId         = 'ami-4dbcb67d'
+                        ImageId         = 'ami-f081e590'
                         InstanceType    = 't2.micro'
                         KeyName         = 'NanasTestKeyPair'
                         SecurityGroup   = 'sg4'
@@ -15,3 +15,4 @@
                         MaxCount        = 1
                     }            
 }
+
